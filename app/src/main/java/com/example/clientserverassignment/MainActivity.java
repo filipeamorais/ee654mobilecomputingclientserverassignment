@@ -3,19 +3,34 @@ package com.example.clientserverassignment;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Service;
+import android.content.ComponentName;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.serverclientassignment.IMyAidlInterface;
+
 public class MainActivity extends AppCompatActivity {
+
+    protected com.example.serverclientassignment.IMyAidlInterface service;
+    ServiceConnection mServiceConn;
+    TextView textViewResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //defining variables and views
         final CharSequence[] fieldOptions = new CharSequence[] {"All", "Title", "Author", "Publisher", "Year"};
+        textViewResult = (TextView) findViewById(R.id.textViewResult);
         //loading the images
         ImageView viewDatabaseImageView = this.findViewById(R.id.viewDatabaseImageView);
         viewDatabaseImageView.setImageResource(R.drawable.database_view);
@@ -34,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog,
                                                 int id) {
                                 //code for the database operation
+                                try {
+                                    String oi = service.add();
+                                    textViewResult.setText("" + oi);
+                                } catch (RemoteException e) {e.printStackTrace();}
                             }
                         });
                 alertdialogbuilder.setNegativeButton("Cancel",
@@ -57,6 +76,36 @@ public class MainActivity extends AppCompatActivity {
                 dialog.show();
             }
 
+
         });
+        //iniating connection to the server
+        initConnection();
     }
+
+    void initConnection(){
+        mServiceConn = new ServiceConnection() {
+            @Override
+            public void onServiceDisconnected(ComponentName name){
+                service = null;
+                Toast.makeText(getApplicationContext(),
+                        "Disconnected", Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder iservice){
+                service = IMyAidlInterface.Stub.asInterface(iservice);
+                Toast.makeText(getApplicationContext(), "Connected",  Toast.LENGTH_SHORT).show();
+            }
+        };
+        if(service == null) {
+            Intent it = new Intent();
+            it.setClassName("com.example.serverclientassignment",
+                    "com.example.serverclientassignment.ComputeService");
+            bindService(it, mServiceConn, Service.BIND_AUTO_CREATE);
+        }
+    } // end of initConnection()
+
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(mServiceConn);
+    };
 }
