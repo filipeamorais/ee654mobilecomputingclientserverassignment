@@ -28,20 +28,20 @@
         tools:context="com.example.dataaccesobjsqlprac.MainActivity">
         <ImageView
             android:id="@+id/viewDatabaseImageView"
-            android:layout_width="60dp"
-            android:layout_height="64dp"
+            android:layout_width="120dp"
+            android:layout_height="80dp"
             android:padding="5dp"
             android:onClick="clickedShow"/>
         <ImageView
             android:id="@+id/deleteDatabaseImageView"
-            android:layout_width="60dp"
-            android:layout_height="64dp"
+            android:layout_width="120dp"
+            android:layout_height="80dp"
             android:padding="5dp"
             android:onClick="clickedDelete"/>
         <ImageView
             android:id="@+id/editDatabaseImageView"
-            android:layout_width="60dp"
-            android:layout_height="64dp"
+            android:layout_width="120dp"
+            android:layout_height="80dp"
             android:padding="5dp"
             android:onClick="editRecord"/>
     </LinearLayout>
