@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     protected com.example.serverclientassignment.IMyAidlInterface service;
     ServiceConnection mServiceConn;
     TextView textViewResult;
+    EditText editTextValue;
     int whichAttribute;
 
     @Override
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         //defining variables and views
         final CharSequence[] fieldOptions = new CharSequence[] {"All", "Title", "Author", "Publisher", "Year"};
         textViewResult = (TextView) findViewById(R.id.textViewResult);
+        editTextValue = (EditText)findViewById(R.id.editTextValue);
 
         //loading the images
         ImageView viewDatabaseImageView = this.findViewById(R.id.viewDatabaseImageView);
@@ -52,8 +55,11 @@ public class MainActivity extends AppCompatActivity {
                                                 int id) {
                                 //code for the database operation
                                 try {
-                                    String oi = service.add();
-                                    textViewResult.setText("" + oi + Integer.toString(whichAttribute));
+                                    String argument = editTextValue.getText().toString();
+                                    if (editTextValue.getText().toString().trim().length() == 0) {argument="0";}
+
+                                    String booksDiplay = service.clickedShow(whichAttribute, argument);
+                                    textViewResult.setText(booksDiplay);
                                 } catch (RemoteException e) {e.printStackTrace();}
                             }
                         });

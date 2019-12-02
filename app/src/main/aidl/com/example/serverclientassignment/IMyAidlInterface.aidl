@@ -1,6 +1,6 @@
 package com.example.serverclientassignment;
 
 interface IMyAidlInterface {
-    String add();
+    String clickedShow(int whichAttribute, String argument);
 }
 
