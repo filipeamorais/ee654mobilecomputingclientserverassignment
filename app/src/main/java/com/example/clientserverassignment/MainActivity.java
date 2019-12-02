@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     protected com.example.serverclientassignment.IMyAidlInterface service;
     ServiceConnection mServiceConn;
     TextView textViewResult;
+    int whichAttribute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         //defining variables and views
         final CharSequence[] fieldOptions = new CharSequence[] {"All", "Title", "Author", "Publisher", "Year"};
         textViewResult = (TextView) findViewById(R.id.textViewResult);
+
         //loading the images
         ImageView viewDatabaseImageView = this.findViewById(R.id.viewDatabaseImageView);
         viewDatabaseImageView.setImageResource(R.drawable.database_view);
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
                                 //code for the database operation
                                 try {
                                     String oi = service.add();
-                                    textViewResult.setText("" + oi);
+                                    textViewResult.setText("" + oi + Integer.toString(whichAttribute));
                                 } catch (RemoteException e) {e.printStackTrace();}
                             }
                         });
@@ -69,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog,
                                                 int which) {
                                 Toast.makeText(getBaseContext(), fieldOptions[which]+ " selected", Toast.LENGTH_SHORT).show();
+                                whichAttribute = which;
                             }
                         });
 
