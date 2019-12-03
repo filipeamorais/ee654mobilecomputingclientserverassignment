@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         });
-        //iniating connection to the server
+        //initiating connection to the server
         initConnection();
     }
 
