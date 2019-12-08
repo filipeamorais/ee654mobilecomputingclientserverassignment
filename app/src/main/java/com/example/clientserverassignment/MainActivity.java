@@ -57,9 +57,19 @@ public class MainActivity extends AppCompatActivity {
                                 try {
                                     String argument = editTextValue.getText().toString();
                                     if (editTextValue.getText().toString().trim().length() == 0) {argument="0";}
-
-                                    String booksDiplay = service.clickedShow(whichAttribute, argument);
-                                    textViewResult.setText(booksDiplay);
+                                    Book[] blist = service.getBookList();
+                                    String str = "# of records is " + blist.length +"\n";
+                                    for( int i=0; i<blist.length; i++) {
+                                        Book b = blist[i];
+                                        String booksDisplay = b.getId() + ", ";
+                                        booksDisplay += b.getbookTitle() + ", ";
+                                        booksDisplay += b.getbookAuthor() + ", ";
+                                        booksDisplay += b.getBookPublisher() + ", ";
+                                        booksDisplay += b.getbookYear() + "\n";
+                                        str += booksDisplay;
+                                    }
+                                    //String booksDiplay = service.clickedShow(whichAttribute, argument);
+                                    textViewResult.setText(str);
                                 } catch (RemoteException e) {e.printStackTrace();}
                             }
                         });
