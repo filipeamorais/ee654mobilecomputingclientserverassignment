@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                                     if (editTextValue.getText().toString().trim().length() == 0) {argument="0";}
 //                                    Book[] blist = service.getBookList(argument);
 //                                    String str = "# of records is " + blist.length +"\n";
-                                    String str = service.clickedShow(0, argument);
+                                    String str = service.clickedShow(whichAttribute, argument);
 //                                    for( int i=0; i<blist.length; i++) {
 //                                        Book b = blist[i];
 //                                        String booksDisplay = b.getId() + ", ";
