@@ -11,6 +11,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -43,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
         editDatabaseImageView.setImageResource(R.drawable.database_edit);
         ImageView deleteDatabaseImageView = this.findViewById(R.id.deleteDatabaseImageView);
         deleteDatabaseImageView.setImageResource(R.drawable.database_delete);
-        //creating the dialogs with the options
+
+        //search button
         viewDatabaseImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+        //delete button
         deleteDatabaseImageView.setOnClickListener(new View.OnClickListener() {
                                                        @Override
                                                        public void onClick(View v) {
@@ -124,13 +127,107 @@ public class MainActivity extends AppCompatActivity {
                        });
 
                AlertDialog dialog = alertdialogbuilder.create();
-               dialog.show();
-                                                       }
+               dialog.show(); }
+        });
+
+        editDatabaseImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alertdialogbuilder =
+                        new AlertDialog.Builder(MainActivity.this);
+                alertdialogbuilder.setTitle("Insert or Update");
+                LayoutInflater li = LayoutInflater.from(
+                        getApplicationContext());
+                View promptsView = li.inflate(
+                        R.layout.get_editing_data, null);
+                alertdialogbuilder.setView(promptsView);
+
+                final EditText idBook = (EditText) promptsView
+                        .findViewById(R.id.editTextId);
+                final EditText titleBook = (EditText) promptsView
+                        .findViewById(R.id.editTextTitle);
+                final EditText authorBook = (EditText) promptsView
+                        .findViewById(R.id.editTextAuthor);
+                final EditText publisherBook = (EditText) promptsView
+                        .findViewById(R.id.editTextPublisher);
+                final EditText yearBook = (EditText) promptsView
+                        .findViewById(R.id.editTextYear);
+
+                alertdialogbuilder.setNeutralButton("INSERT",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int id) {
+                                //code for the database operation
+                                try {
+                                    String bookId = idBook.getText().toString();
+                                    String bookTitle= titleBook.getText().toString();
+                                    String bookAuthor = authorBook.getText().toString();
+                                    String bookPublisher = publisherBook.getText().toString();
+                                    String bookYear = yearBook.getText().toString();
+                                    //if (editTextValue.getText().toString().trim().length() == 0) {argument="0";}
+                                    String str = service.insertCommand(createBookObj(bookId, bookTitle, bookAuthor, bookPublisher, bookYear));
+                                    textViewResult.setText(str);
+                                } catch (RemoteException e) {e.printStackTrace();}
+                            }
+                        });
+
+                alertdialogbuilder.setNegativeButton("UPDATE",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int id) {
+                                //code for the database operation
+                                try {
+                                    String bookId = idBook.getText().toString();
+                                    String bookTitle= titleBook.getText().toString();
+                                    String bookAuthor = authorBook.getText().toString();
+                                    String bookPublisher = publisherBook.getText().toString();
+                                    String bookYear = yearBook.getText().toString();
+                                    //if (editTextValue.getText().toString().trim().length() == 0) {argument="0";}
+                                    String str = service.updateCommand(createBookObj(bookId, bookTitle, bookAuthor, bookPublisher, bookYear));
+                                    textViewResult.setText(str);
+                                } catch (RemoteException e) {e.printStackTrace();}
+                            }
+
+                });
+
+                alertdialogbuilder.setPositiveButton("CANCEL",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+
+//                alertdialogbuilder.setSingleChoiceItems(fieldOptions, 0,
+////                        new DialogInterface.OnClickListener() {
+////                            @Override
+////                            public void onClick(DialogInterface dialog,
+////                                                int which) {
+////                                Toast.makeText(getBaseContext(), fieldOptions[which]+ " selected", Toast.LENGTH_SHORT).show();
+////                                whichAttribute = which;
+////                            }
+////                        });
+
+                AlertDialog dialog = alertdialogbuilder.create();
+                dialog.show();
+            }
 
 
-                                                   });
+        });
         //initiating connection to the server
         initConnection();
+    }
+
+    public Book createBookObj(String bookId, String bookTitle, String bookAuthor, String bookPublisher, String bookYear) {
+        int stringId = Integer.parseInt(bookId);
+//        String stringTitle = title.getText().toString();
+//        String stringAuthor = author.getText().toString();
+//        String stringPublisher = publisher.getText().toString();
+//        String stringYear = year.getText().toString();
+
+        Book filledBook = new Book(stringId, bookTitle, bookAuthor, bookPublisher, bookYear);
+
+        return filledBook;
     }
 
     void initConnection(){
