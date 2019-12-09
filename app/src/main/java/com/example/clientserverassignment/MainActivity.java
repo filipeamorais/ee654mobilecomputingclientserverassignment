@@ -57,19 +57,7 @@ public class MainActivity extends AppCompatActivity {
                                 try {
                                     String argument = editTextValue.getText().toString();
                                     if (editTextValue.getText().toString().trim().length() == 0) {argument="0";}
-//                                    Book[] blist = service.getBookList(argument);
-//                                    String str = "# of records is " + blist.length +"\n";
                                     String str = service.clickedShow(whichAttribute, argument);
-//                                    for( int i=0; i<blist.length; i++) {
-//                                        Book b = blist[i];
-//                                        String booksDisplay = b.getId() + ", ";
-//                                        booksDisplay += b.getbookTitle() + ", ";
-//                                        booksDisplay += b.getbookAuthor() + ", ";
-//                                        booksDisplay += b.getBookPublisher() + ", ";
-//                                        booksDisplay += b.getbookYear() + "\n";
-//                                        str += booksDisplay;
-//                                    }
-                                    //String booksDiplay = service.clickedShow(whichAttribute, argument);
                                     textViewResult.setText(str);
                                 } catch (RemoteException e) {e.printStackTrace();}
                             }
@@ -98,6 +86,49 @@ public class MainActivity extends AppCompatActivity {
 
 
         });
+
+        deleteDatabaseImageView.setOnClickListener(new View.OnClickListener() {
+                                                       @Override
+                                                       public void onClick(View v) {
+               AlertDialog.Builder alertdialogbuilder =
+                       new AlertDialog.Builder(MainActivity.this);
+               alertdialogbuilder.setPositiveButton("OK",
+                       new DialogInterface.OnClickListener() {
+                           public void onClick(DialogInterface dialog,
+                                               int id) {
+                               //code for the database operation
+                               try {
+                                   String argument = editTextValue.getText().toString();
+                                   if (editTextValue.getText().toString().trim().length() == 0) {argument="0";}
+                                   String str = service.clickedDelete(whichAttribute, argument);
+                                   textViewResult.setText(str);
+                               } catch (RemoteException e) {e.printStackTrace();}
+                           }
+                       });
+               alertdialogbuilder.setNegativeButton("Cancel",
+                       new DialogInterface.OnClickListener() {
+                           public void onClick(DialogInterface dialog,
+                                               int id) {
+                               // User cancelled the dialog
+                           }
+                       });
+
+               alertdialogbuilder.setSingleChoiceItems(fieldOptions, 0,
+                       new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialog,
+                                               int which) {
+                               Toast.makeText(getBaseContext(), fieldOptions[which]+ " selected", Toast.LENGTH_SHORT).show();
+                               whichAttribute = which;
+                           }
+                       });
+
+               AlertDialog dialog = alertdialogbuilder.create();
+               dialog.show();
+                                                       }
+
+
+                                                   });
         //initiating connection to the server
         initConnection();
     }
@@ -127,5 +158,5 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unbindService(mServiceConn);
-    };
+    }
 }
